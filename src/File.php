@@ -8,6 +8,7 @@ class File
     private $route;
     private $expires;
     private $content;
+    private $status = 200;
 
     public static function create()
     {
@@ -22,6 +23,10 @@ class File
             throw new \InvalidArgumentException("No route was set in cache file");
         }
         $file->setRoute($fileContents['route']);
+        if (!isset($fileContents['status'])) {
+            throw new \InvalidArgumentException("No status was set in cache file");
+        }
+        $file->setContent($fileContents['status']);
         if (!isset($fileContents['content'])) {
             throw new \InvalidArgumentException("No content was set in cache file");
         }
@@ -92,7 +97,27 @@ class File
     public function toString()
     {
         return json_encode(
-            ['route' => $this->getRoute(), 'content' => $this->getContent(), 'expires' => $this->getExpires()]
+            ['route'   => $this->getRoute(),
+             'status'  => $this->getStatus(),
+             'content' => $this->getContent(),
+             'expires' => $this->getExpires()
+            ]
         );
+    }
+
+    /**
+     * @return int
+     */
+    public function getStatus()
+    {
+        return $this->status;
+    }
+
+    /**
+     * @param int $status
+     */
+    public function setStatus($status)
+    {
+        $this->status = $status;
     }
 }
