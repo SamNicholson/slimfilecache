@@ -1,6 +1,5 @@
 <?php
 
-use SNicholson\SlimFileCache\Cache;
 use SNicholson\SlimFileCache\File;
 
 class FileTest extends PHPUnit_Framework_TestCase
@@ -17,6 +16,7 @@ class FileTest extends PHPUnit_Framework_TestCase
         $this->assertEquals(null, $file->getExpires());
         $this->assertEquals(null, $file->getRoute());
         $this->assertEquals(200, $file->getStatus());
+        $this->assertEquals([], $file->getHeaders());
     }
 
     /**
@@ -27,7 +27,7 @@ class FileTest extends PHPUnit_Framework_TestCase
     {
         $expires = time() + 3600;
         $file = File::fromString(
-            '{"route": "route", "status":200, "content": "content", "expires": ' . $expires . '}'
+            '{"route": "route", "status":200, "content": "content", "headers":[], "expires": ' . $expires . '}'
         );
         $this->assertEquals('route', $file->getRoute());
         $this->assertEquals('content', $file->getContent());
@@ -68,9 +68,10 @@ class FileTest extends PHPUnit_Framework_TestCase
         $file->setExpires('sometime');
         $file->setRoute('some-route');
         $file->setContent('some-content');
+        $file->setHeaders(['test' => 'test']);
         $file->setStatus(200);
         $this->assertEquals(
-            '{"route":"some-route","status":200,"content":"some-content","expires":"sometime"}',
+            '{"route":"some-route","status":200,"content":"some-content","headers":{"test":"test"},"expires":"sometime"}',
             $file->toString()
         );
     }
@@ -81,7 +82,7 @@ class FileTest extends PHPUnit_Framework_TestCase
      */
     public function testFilesSetNeverToExpireNeverDo()
     {
-        $fileString = '{"route":"some-route","status":200,"content":"some-content","expires":-1}';
+        $fileString = '{"route":"some-route","status":200,"content":"some-content","headers":{},"expires":-1}';
         File::fromString($fileString);
     }
 }

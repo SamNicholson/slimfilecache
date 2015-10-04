@@ -8,6 +8,7 @@ class File
     private $route;
     private $expires;
     private $content;
+    private $headers = [];
     private $status = 200;
 
     public static function create()
@@ -31,6 +32,10 @@ class File
             throw new \InvalidArgumentException("No content was set in cache file");
         }
         $file->setContent($fileContents['content']);
+        if (!isset($fileContents['headers'])) {
+            throw new \InvalidArgumentException("No headers was set in cache file");
+        }
+        $file->setHeaders($fileContents['headers']);
         if (!isset($fileContents['expires'])) {
             throw new \InvalidArgumentException("No expires was set in cache file");
         }
@@ -97,10 +102,12 @@ class File
     public function toString()
     {
         return json_encode(
-            ['route'   => $this->getRoute(),
-             'status'  => $this->getStatus(),
-             'content' => $this->getContent(),
-             'expires' => $this->getExpires()
+            [
+                'route'   => $this->getRoute(),
+                'status'  => $this->getStatus(),
+                'content' => $this->getContent(),
+                'headers' => $this->getHeaders(),
+                'expires' => $this->getExpires()
             ]
         );
     }
@@ -119,5 +126,21 @@ class File
     public function setStatus($status)
     {
         $this->status = $status;
+    }
+
+    /**
+     * @return array
+     */
+    public function getHeaders()
+    {
+        return $this->headers;
+    }
+
+    /**
+     * @param array $headers
+     */
+    public function setHeaders(array $headers)
+    {
+        $this->headers = $headers;
     }
 }

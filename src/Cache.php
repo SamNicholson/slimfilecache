@@ -20,6 +20,11 @@ class Cache
     private $directory;
     private $app;
 
+    /**
+     * Takes the slim app and then the directory where the cache is to be saved
+     * @param App    $app
+     * @param string $cacheDirectory
+     */
     public function __construct(App $app, $cacheDirectory = __DIR__ . '/../cache/')
     {
         $this->directory = $cacheDirectory;
@@ -43,6 +48,9 @@ class Cache
         $cache = $this->get($requestPath);
         if ($cache instanceof File) {
             $response = $response->withStatus($cache->getStatus());
+            foreach ($cache->getHeaders() as $header => $value) {
+                $response = $response->withHeader($header, $value);
+            }
             $response->getBody()->write($cache->getContent());
             return $response;
         }
@@ -74,19 +82,21 @@ class Cache
      * Adds a cache entry with a given key, content and for a set amount of time
      * The time by default for the cache is an hour
      *
-     * @param     $cacheKey
-     * @param     $content
-     * @param     $status
-     * @param int $expires
+     * @param       $cacheKey
+     * @param       $content
+     * @param int   $status
+     * @param array $headers
+     * @param int   $expires
      *
      * @throws CacheFileSystemException
      */
-    public function add($cacheKey, $content, $status = 200, $expires = Cache::HOUR)
+    public function add($cacheKey, $content, $status = 200, $headers = [], $expires = Cache::HOUR)
     {
         $file = File::create();
         $file->setStatus($status);
         $file->setContent($content);
         $file->setRoute($cacheKey);
+        $file->setHeaders($headers);
         if ($expires > 0) {
             $file->setExpires(time() + $expires);
         } else {
@@ -105,6 +115,7 @@ class Cache
     }
 
     /**
+     * Returns the directory the cache is set to save into
      * @return mixed
      */
     public function getDirectory()
