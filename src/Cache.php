@@ -43,7 +43,8 @@ class Cache
         $cache = $this->get($requestPath);
         if ($cache instanceof File) {
             $response = $response->withStatus($cache->getStatus());
-            return $response->getBody()->write($cache->getContent());
+            $response->getBody()->write($cache->getContent());
+            return $response;
         }
         $response = $next($request, $response);
         return $response;
