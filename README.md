@@ -54,6 +54,17 @@ $slim->get(
 
 ```
 
+Alternatively you can tell the cache to store all routes called by simple placing the following line after you have
+run the slim app
+```php
+//Run the slim app (like normal)
+$slim->run();
+
+//Place the global cache afterwards, the next request at this route will be cached
+$cache->add($ipfo->request->getUri()->getPath(), $ipfo->response->getBody()->__toString());
+
+```
+
 The cache has a few other simple methods. They are flush, get, remove. They essentially do what they say on the tin:
 
 ```php 
