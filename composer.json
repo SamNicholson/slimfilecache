@@ -1,0 +1,23 @@
+{
+  "name": "snicholson/slimfilecache",
+  "description": "A file based cache middleware for the slim framework (3.0)",
+  "minimum-stability": "dev",
+  "license": "apache 2.0",
+  "authors": [
+    {
+      "name": "Sam Nicholson",
+      "email": "snicholson@workanyware.co.uk"
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+      "SNicholson\\SlimFileCache\\" : "src/"
+    }
+  },
+  "require": {
+    "slim/slim": "^3.0@RC"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "4.8.*"
+  }
+}
