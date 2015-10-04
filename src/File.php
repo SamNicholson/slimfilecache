@@ -14,12 +14,22 @@ class File
         return new File();
     }
 
-    public static function fromArgs($route, $content, $expires)
+    public static function fromString($content)
     {
         $file = new File();
-        $file->setRoute($route);
-        $file->setContent($content);
-        $file->setExpires($expires);
+        $fileContents = json_decode($content, true);
+        if (!isset($fileContents['route'])) {
+            throw new \InvalidArgumentException("No route was set in cache file");
+        }
+        $file->setRoute($fileContents['route']);
+        if (!isset($fileContents['content'])) {
+            throw new \InvalidArgumentException("No content was set in cache file");
+        }
+        $file->setContent($fileContents['content']);
+        if (!isset($fileContents['expires'])) {
+            throw new \InvalidArgumentException("No expires was set in cache file");
+        }
+        $file->setExpires($fileContents['expires']);
         return $file;
     }
 
@@ -74,5 +84,12 @@ class File
     public function setRoute($route)
     {
         $this->route = $route;
+    }
+
+    public function toString()
+    {
+        return json_encode(
+            ['route' => $this->getRoute(), 'content' => $this->getContent(), 'expires' => $this->getExpires()]
+        );
     }
 }

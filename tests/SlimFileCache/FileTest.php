@@ -18,14 +18,58 @@ class FileTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * Tests that when using the static from Args the correct properties are set on the object
-     * @test Test From Args Sets Properties
+     * Tests that when reading from a file, the json is parsed correctly
+     * @test Test From String Parses Correctly
      */
-    public function testFromArgsSetsProperties()
+    public function testFromStringParsesCorrectly()
     {
-        $file = File::fromArgs('route', 'content', 'expires');
+        $file = File::fromString(
+            '{"route": "route", "content": "content", "expires": "expires"}'
+        );
         $this->assertEquals('route', $file->getRoute());
         $this->assertEquals('content', $file->getContent());
         $this->assertEquals('expires', $file->getExpires());
     }
+
+    /**
+     * Tests that invalid files throw exceptions
+     * @test Invalid cache files cause exceptions
+     * @dataProvider getInvalidFiles
+     */
+    public function testInvalidCacheFilesCauseException($file)
+    {
+        $this->setExpectedException('\InvalidArgumentException');
+        $file = File::fromString($file);
+    }
+
+    /**
+     * The data providers for the invalid file tests
+     * @return array
+     */
+    public function getInvalidFiles()
+    {
+        return [
+            [''],
+            ['{"route": "oops"}'],
+            ['{"route": "route", "contents": "content", "expires": "expires"}'],
+            [null]
+        ];
+    }
+
+    /**
+     * @test Test that to string returns a correctly formatted cache file string
+     */
+    public function testToStringReturnsCorrectly()
+    {
+        $file = File::create();
+        $file->setExpires('sometime');
+        $file->setRoute('some-route');
+        $file->setContent('some-content');
+        $this->assertEquals(
+            '{"route":"some-route","content":"some-content","expires":"sometime"}',
+            $file->toString()
+        );
+    }
+
+
 }
