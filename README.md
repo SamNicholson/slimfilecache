@@ -30,7 +30,7 @@ $slim->add($cache);
 
 ## Usage
 To use the cache you simple need to cache the output of your route before returning it. The add method takes 3 arguments,
-the first one is the route name. The second one is the content, and the third argument is the response code status (e.g. 200) and fourthly duration of the cache in seconds.
+the first one is the route name. The second one is the content, and the third argument is the response code status (e.g. 200) and fourthly is an array of headers to send, the fifth is the duration of the cache in seconds.
 The default length is 1 hour. The second argument for the cache is the directory to store the cache files in.
 The directory must be writeable to the web user.
 
