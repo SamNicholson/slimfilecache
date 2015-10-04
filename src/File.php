@@ -26,7 +26,7 @@ class File
         if (!isset($fileContents['status'])) {
             throw new \InvalidArgumentException("No status was set in cache file");
         }
-        $file->setContent($fileContents['status']);
+        $file->setStatus($fileContents['status']);
         if (!isset($fileContents['content'])) {
             throw new \InvalidArgumentException("No content was set in cache file");
         }

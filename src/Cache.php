@@ -42,6 +42,7 @@ class Cache
         /** @var File $cache */
         $cache = $this->get($requestPath);
         if ($cache instanceof File) {
+            $response = $response->withStatus($cache->getStatus());
             return $response->getBody()->write($cache->getContent());
         }
         $response = $next($request, $response);
@@ -71,13 +72,18 @@ class Cache
     /**
      * Adds a cache entry with a given key, content and for a set amount of time
      * The time by default for the cache is an hour
+     *
      * @param     $cacheKey
      * @param     $content
+     * @param     $status
      * @param int $expires
+     *
+     * @throws CacheFileSystemException
      */
-    public function add($cacheKey, $content, $expires = Cache::HOUR)
+    public function add($cacheKey, $content, $status = 200, $expires = Cache::HOUR)
     {
         $file = File::create();
+        $file->setStatus($status);
         $file->setContent($content);
         $file->setRoute($cacheKey);
         if ($expires > 0) {

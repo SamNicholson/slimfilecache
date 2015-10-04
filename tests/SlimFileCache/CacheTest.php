@@ -20,7 +20,7 @@ class CacheTest extends PHPUnit_Framework_TestCase
         //Run the app
         $slim->run(true);
 
-        $cache->add('/foo.cache', 'something');
+        $cache->add('/foo.cache', 'something', 200);
 
         //Check that the file was created in the expected place
         $expectedCacheFile = $cache->getDirectory() . sha1('/foo.cache');
@@ -41,12 +41,13 @@ class CacheTest extends PHPUnit_Framework_TestCase
         $cache->flush();
 
         //Manually create the cache file we expect
-        $cache->add('/foo', 'foo-bar');
+        $cache->add('/foo', 'foo-bar', 201);
 
         $slim->run(true);
 
         //Check that the file was created in the expected place
         $this->assertEquals('foo-bar', $slim->response->getBody()->__toString());
+        $this->assertEquals(201, $slim->response->getStatusCode());
 
         $cache->remove('/foo');
     }
@@ -59,7 +60,7 @@ class CacheTest extends PHPUnit_Framework_TestCase
         $slim = $this->getSampleSlimApp('/foo', 'slim-cache.slim');
         // Add file cache middleware
         $cache = new \SNicholson\SlimFileCache\Cache($slim);
-        $cache->add('/foo', 'cached');
+        $cache->add('/foo', 'cached', 200);
         $slim->add($cache);
 
         $cache->remove('/foo');
@@ -77,9 +78,9 @@ class CacheTest extends PHPUnit_Framework_TestCase
         $slim = $this->getSampleSlimApp('/foo', 'slim-cache.slim');
         // Add file cache middleware
         $cache = new \SNicholson\SlimFileCache\Cache($slim);
-        $cache->add('/foo', 'cached');
-        $cache->add('/foo2', 'cached');
-        $cache->add('/foo3', 'cached');
+        $cache->add('/foo', 'cached', 200);
+        $cache->add('/foo2', 'cached', 200);
+        $cache->add('/foo3', 'cached', 200);
         $cache->flush();
         $this->assertFalse($cache->get('/foo'));
         $this->assertFalse($cache->get('/foo2'));
@@ -100,7 +101,7 @@ class CacheTest extends PHPUnit_Framework_TestCase
                 'environment' => Environment::mock(
                     [
                         'REQUEST_METHOD' => $requestMethod,
-                        'REQUEST_URI'   => $uri,
+                        'REQUEST_URI'    => $uri,
                         'SERVER_NAME'    => $serverName,
                     ]
                 )
