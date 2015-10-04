@@ -1,5 +1,6 @@
 <?php
 
+use SNicholson\SlimFileCache\Cache;
 use SNicholson\SlimFileCache\File;
 
 class FileTest extends PHPUnit_Framework_TestCase
@@ -23,12 +24,13 @@ class FileTest extends PHPUnit_Framework_TestCase
      */
     public function testFromStringParsesCorrectly()
     {
+        $expires = time() + 3600;
         $file = File::fromString(
-            '{"route": "route", "content": "content", "expires": "expires"}'
+            '{"route": "route", "content": "content", "expires": ' . $expires . '}'
         );
         $this->assertEquals('route', $file->getRoute());
         $this->assertEquals('content', $file->getContent());
-        $this->assertEquals('expires', $file->getExpires());
+        $this->assertEquals($expires, $file->getExpires());
     }
 
     /**
@@ -39,7 +41,7 @@ class FileTest extends PHPUnit_Framework_TestCase
     public function testInvalidCacheFilesCauseException($file)
     {
         $this->setExpectedException('\InvalidArgumentException');
-        $file = File::fromString($file);
+        File::fromString($file);
     }
 
     /**
@@ -71,5 +73,12 @@ class FileTest extends PHPUnit_Framework_TestCase
         );
     }
 
-
+    /**
+     * @test Test files set to never expire, never actually do!
+     */
+    public function testFilesSetNeverToExpireNeverDo()
+    {
+        $fileString = '{"route":"some-route","content":"some-content","expires":-1}';
+        File::fromString($fileString);
+    }
 }

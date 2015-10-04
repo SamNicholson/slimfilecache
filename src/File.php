@@ -30,6 +30,9 @@ class File
             throw new \InvalidArgumentException("No expires was set in cache file");
         }
         $file->setExpires($fileContents['expires']);
+        if ($fileContents['expires'] < time() && $fileContents['expires'] !== -1) {
+            throw new CacheExpiredException("Cache had expired");
+        }
         return $file;
     }
 
