@@ -61,7 +61,7 @@ run the slim app
 $slim->run();
 
 //Place the global cache afterwards, the next request at this route will be cached
-$cache->add($ipfo->request->getUri()->getPath(), $ipfo->response->getBody()->__toString());
+$cache->add($slim->request->getUri()->getPath(), $slim->response->getBody()->__toString());
 
 ```
 
