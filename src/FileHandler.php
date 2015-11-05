@@ -45,9 +45,7 @@ class FileHandler
             return false;
         }
         try {
-            return File::fromString(
-                file_get_contents($routePath)
-            );
+            return File::fromString(file_get_contents($routePath));
         } catch (\Exception $e) {
             //Delete the cache file
             unlink($routePath);

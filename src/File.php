@@ -10,6 +10,7 @@ class File
     private $content;
     private $headers = [];
     private $status = 200;
+    private static $fileRequiredProperties = ['route', 'status', 'content', 'headers', 'expires'];
 
     public static function create()
     {
@@ -20,25 +21,16 @@ class File
     {
         $file = new File();
         $fileContents = json_decode($content, true);
-        if (!isset($fileContents['route'])) {
-            throw new \InvalidArgumentException("No route was set in cache file");
+
+        foreach (self::$fileRequiredProperties as $property) {
+            if (!isset($fileContents[$property])) {
+                throw new \InvalidArgumentException("No $property was set in cache file");
+            }
         }
         $file->setRoute($fileContents['route']);
-        if (!isset($fileContents['status'])) {
-            throw new \InvalidArgumentException("No status was set in cache file");
-        }
         $file->setStatus($fileContents['status']);
-        if (!isset($fileContents['content'])) {
-            throw new \InvalidArgumentException("No content was set in cache file");
-        }
         $file->setContent($fileContents['content']);
-        if (!isset($fileContents['headers'])) {
-            throw new \InvalidArgumentException("No headers was set in cache file");
-        }
         $file->setHeaders($fileContents['headers']);
-        if (!isset($fileContents['expires'])) {
-            throw new \InvalidArgumentException("No expires was set in cache file");
-        }
         $file->setExpires($fileContents['expires']);
         if ($fileContents['expires'] < time() && $fileContents['expires'] !== -1) {
             throw new CacheExpiredException("Cache had expired");
