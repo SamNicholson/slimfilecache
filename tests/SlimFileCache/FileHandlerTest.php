@@ -5,6 +5,7 @@ use SNicholson\SlimFileCache\FileHandler;
 
 class FileHandlerTest extends PHPUnit_Framework_TestCase
 {
+    private $testCachePath = __DIR__ . '/../../cache/';
 
     /**
      * Tests that when you call write on the file handler the file is saved to disk in the right place with the right
@@ -20,10 +21,10 @@ class FileHandlerTest extends PHPUnit_Framework_TestCase
         $file->setExpires(time() + 3600);
         $fileHandler->write($file);
         $this->assertTrue(
-            $exist = file_exists( __DIR__ . '/../../cache/' . sha1('sampleWriteFile'))
+            $exist = file_exists( $this->testCachePath . sha1('sampleWriteFile'))
         );
         if ($exist) {
-            unlink(__DIR__ . '/../../cache/' . sha1('sampleWriteFile'));
+            unlink($this->testCachePath . sha1('sampleWriteFile'));
         }
     }
 
@@ -49,7 +50,7 @@ class FileHandlerTest extends PHPUnit_Framework_TestCase
         $file->setExpires(time() + 3600);
         $fileHandler->write($file);
         $this->assertEquals($file, $fileHandler->read('sampleWriteFile'));
-        unlink(__DIR__ . '/../../cache/' . sha1('sampleWriteFile'));
+        unlink($this->testCachePath . sha1('sampleWriteFile'));
     }
 
     /**
@@ -64,9 +65,9 @@ class FileHandlerTest extends PHPUnit_Framework_TestCase
         $file->setContent('someContent');
         $file->setExpires(time() - 100);
         $fileHandler->write($file);
-        $this->assertTrue(file_exists(__DIR__ . '/../../cache/' . sha1('sampleWriteFile')));
+        $this->assertTrue(file_exists($this->testCachePath . sha1('sampleWriteFile')));
         $this->assertFalse($fileHandler->read('sampleWriteFile'));
-        $this->assertFalse(file_exists(__DIR__ . '/../../cache/' . sha1('sampleWriteFile')));
+        $this->assertFalse(file_exists($this->testCachePath . sha1('sampleWriteFile')));
     }
 
     /**
@@ -80,9 +81,9 @@ class FileHandlerTest extends PHPUnit_Framework_TestCase
         $file->setContent('someContent');
         $file->setExpires(time() + 100);
         $fileHandler->write($file);
-        $this->assertTrue(file_exists(__DIR__ . '/../../cache/' . sha1('sampleWriteFile')));
+        $this->assertTrue(file_exists($this->testCachePath . sha1('sampleWriteFile')));
         $fileHandler->delete('sampleWriteFile');
-        $this->assertFalse(file_exists(__DIR__ . '/../../cache/' . sha1('sampleWriteFile')));
+        $this->assertFalse(file_exists($this->testCachePath . sha1('sampleWriteFile')));
     }
 
     /**

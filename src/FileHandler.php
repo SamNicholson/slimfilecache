@@ -70,7 +70,7 @@ class FileHandler
     public function deleteAll()
     {
         foreach (scandir($this->directory) as $file) {
-            if (!in_array($file, ['.', '..'])) {
+            if (!in_array($file, ['.', '..', 'keep'])) {
                 unlink($this->directory . '/' . $file);
             }
         }
