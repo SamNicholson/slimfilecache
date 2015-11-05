@@ -3,8 +3,8 @@
         colors="true"
         >
     <testsuites>
-        <testsuite name="IPFO Test Suite">
-            <directory>src/tests</directory>
+        <testsuite name="Slim File Cache Test Suite">
+            <directory>tests</directory>
         </testsuite>
     </testsuites>
 </phpunit>
