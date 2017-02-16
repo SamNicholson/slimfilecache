@@ -25,8 +25,11 @@ class Cache
      * @param App    $app
      * @param string $cacheDirectory
      */
-    public function __construct(App $app, $cacheDirectory = __DIR__ . '/../cache/')
+    public function __construct(App $app, $cacheDirectory = null)
     {
+        if(is_null($cacheDirectory)) {
+            $cacheDirectory = __DIR__ . '/../cache/';
+        }
         $this->directory = $cacheDirectory;
         $this->fileHandler = new FileHandler($cacheDirectory);
         $this->app = $app;
